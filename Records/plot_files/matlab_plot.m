@@ -28,6 +28,7 @@ plot(t1feedback(1:700), feedback0(1:700,2));
 title("Accelerometer X"+n+"(mapping: 0~1024. -39.24~39.24[m/s^2])")
 xlabel("step")
 ylabel("acceleration (0~1024)")
+ylim([400, 750])
 grid on
 %https://cyberbotics.com/doc/reference/accelerometer
 subplot(2,3,2)
@@ -35,6 +36,7 @@ plot(t1feedback(1:700), feedback0(1:700,3));
 title("Accelerometer Y"+n+"(mapping: 0~1024. -39.24~39.24[m/s^2])")
 xlabel("step")
 ylabel("acceleration (0~1024)")
+ylim([400, 750])
 grid on
 
 subplot(2,3,3)
@@ -42,6 +44,7 @@ plot(t1feedback(1:700), feedback0(1:700,4));
 title("Accelerometer Z"+n+"(mapping: 0~1024. -39.24~39.24[m/s^2])")
 xlabel("step")
 ylabel("acceleration (0~1024)")
+ylim([400, 750])
 grid on
 
 subplot(2,3,4)
@@ -49,6 +52,7 @@ plot(t1feedback(1:700), feedback0(1:700,5));
 title("Gyro X"+n+"(mapping: 0~1024. -27.925~27.925[m/s^2])")
 xlabel("step")
 ylabel("gyro (0~1024)")
+ylim([400, 750])
 grid on
 %https://cyberbotics.com/doc/reference/gyro
 subplot(2,3,5)
@@ -56,6 +60,7 @@ plot(t1feedback(1:700), feedback0(1:700,6));
 title("Gyro Y"+n+"(mapping: 0~1024. -27.925~27.925[m/s^2])")
 xlabel("step")
 ylabel("gyro (0~1024)")
+ylim([400, 750])
 grid on
 
 subplot(2,3,6)
@@ -63,6 +68,7 @@ plot(t1feedback(1:700), feedback0(1:700,7));
 title("Gyro Z"+n+"(mapping: 0~1024. -27.925~27.925[m/s^2])")
 xlabel("step")
 ylabel("gyro (0~1024)")
+ylim([400, 750])
 grid on
 
 figure;

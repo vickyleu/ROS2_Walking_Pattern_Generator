@@ -10,9 +10,9 @@ namespace walking_pattern_generator
     std::unique_ptr<control_plugin_base::WalkingPattern> walking_pattern_ptr = std::make_unique<control_plugin_base::WalkingPattern>();
 
     // // LOG: Logを吐くファイルを指定
-    // std::ofstream WPG_log_WalkingPttern;
-    // std::string WPG_log_WalkingPttern_path = "src/Log/WPG_log_WalkingPattern.dat";
-    // WPG_log_WalkingPttern.open(WPG_log_WalkingPttern_path, std::ios::out);
+    std::ofstream WPG_log_WalkingPttern;
+    std::string WPG_log_WalkingPttern_path = "src/Log/WPG_log_WalkingPattern.dat";
+    WPG_log_WalkingPttern.open(WPG_log_WalkingPttern_path, std::ios::out);
 
     // 制御周期
     // const float CONTROL_CYCLE_ = 0.01;  // [s]
@@ -156,30 +156,30 @@ namespace walking_pattern_generator
       walking_pattern_ptr->wc_foot_land_pos_ref[step][1] -= foot_step_ptr->foot_pos[0][1];
     }
 
-    // // LOG: plot用
-    //   // TODO: 胴体投影点で歩行パターンを生成すればココも不要になって、生成のループ内に記述できる。
-    // walking_step = 0;
-    // walking_time = 0;
-    // control_step = 0;
-    // t = 0;
-    // while(walking_time <= walking_time_max) {
-    //   if(t < WALKING_CYCLE_ - 0.01) {
-    //     t += CONTROL_CYCLE_;
-    //   }
-    //   else if(t >= WALKING_CYCLE_ - 0.01) {
-    //     walking_step++;
-    //     t = 0.01;
-    //   }
-    //   WPG_log_WalkingPttern << walking_pattern_ptr->cc_cog_pos_ref[control_step][0] << " " << walking_pattern_ptr->cc_cog_pos_ref[control_step][1] << " " 
-    //             << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][0] << " " << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][1] << " " 
-    //             << foot_step_ptr->foot_pos[walking_step][0] << " " << foot_step_ptr->foot_pos[walking_step][1]-(foot_step_ptr->foot_pos[0][1])
-    //   << std::endl;
-    //   control_step++;
-    //   walking_time += CONTROL_CYCLE_;
-    // }
+    // LOG: plot用
+      // TODO: 胴体投影点で歩行パターンを生成すればココも不要になって、生成のループ内に記述できる。
+    walking_step = 0;
+    walking_time = 0;
+    control_step = 0;
+    t = 0;
+    while(walking_time <= walking_time_max) {
+      if(t < WALKING_CYCLE_ - 0.01) {
+        t += CONTROL_CYCLE_;
+      }
+      else if(t >= WALKING_CYCLE_ - 0.01) {
+        walking_step++;
+        t = 0.01;
+      }
+      WPG_log_WalkingPttern << walking_pattern_ptr->cc_cog_pos_ref[control_step][0] << " " << walking_pattern_ptr->cc_cog_pos_ref[control_step][1] << " " 
+                << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][0] << " " << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][1] << " " 
+                << foot_step_ptr->foot_pos[walking_step][0] << " " << foot_step_ptr->foot_pos[walking_step][1]-(foot_step_ptr->foot_pos[0][1])
+      << std::endl;
+      control_step++;
+      walking_time += CONTROL_CYCLE_;
+    }
 
-    // // LOG: Log file close
-    // WPG_log_WalkingPttern.close();
+    // LOG: Log file close
+    WPG_log_WalkingPttern.close();
 
     return walking_pattern_ptr;
   }

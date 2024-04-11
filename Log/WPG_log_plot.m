@@ -46,7 +46,7 @@ f3 = "WPG_log_WalkingPattern";
 figure('name', f3);
 plot(t, WPG_log_WalkingPattern)
 % legend(["CoG Position X world", "CoG Position Y world", "CoG Velocity X", "CoG Velocity Y", "p x fix", "p y fix", "LandingPosition X", "LandingPosition Y"], "Location", "northwest")
-legend(["CoG Position X world [m]", "CoG Position Y world [m]", "p x fix [m]", "p y fix [m]", "LandingPosition X [m]", "LandingPosition Y [m]"], "Location", "northwest")
+legend(["CoG Position X world [m]", "CoG Position Y world [m]", "FixedLandingPosition X [m]", "FixedlandingPosition Y [m]", "LandingPosition X [m]", "LandingPosition Y [m]"], "Location", "northwest")
 xlabel("time")
 ylabel("position [m]")
 grid on
@@ -139,65 +139,65 @@ grid on
 
 
 
-load WRH_log_Feedback.dat;
+%load WRH_log_Feedback.dat;
 
-[a9, b9] = size(WRH_log_Feedback);
-t9 = 1:a9;
-i = 0;
-for n=t9
-  i = i + 1;
-  acc_x(i) = WRH_log_Feedback(i, 2);
-  acc_y(i) = WRH_log_Feedback(i, 3);
-  acc_z(i) = WRH_log_Feedback(i, 4);
-  gyr_x(i) = WRH_log_Feedback(i, 5);
-  gyr_y(i) = WRH_log_Feedback(i, 6);
-  gyr_z(i) = WRH_log_Feedback(i, 7);
-end
+%[a9, b9] = size(WRH_log_Feedback);
+%t9 = 1:a9;
+%i = 0;
+%for n=t9
+%  i = i + 1;
+%  acc_x(i) = WRH_log_Feedback(i, 2);
+%  acc_y(i) = WRH_log_Feedback(i, 3);
+%  acc_z(i) = WRH_log_Feedback(i, 4);
+%  gyr_x(i) = WRH_log_Feedback(i, 5);
+%  gyr_y(i) = WRH_log_Feedback(i, 6);
+%  gyr_z(i) = WRH_log_Feedback(i, 7);
+%end
 
-f9 = "WRH_log_Feedback (lookup tableの影響は不明. offsetは減算済み)";
-figure("name", f9);
+%f9 = "WRH_log_Feedback (lookup tableの影響は不明. offsetは減算済み)";
+%figure("name", f9);
 
-subplot(2, 3, 1)
-plot(t9, acc_x)
-title("Accelerometer axis-X")
-ylabel("acceleration [m/s^2]")
-xlabel("step")
-grid on
+%subplot(2, 3, 1)
+%plot(t9, acc_x)
+%title("Accelerometer axis-X")
+%ylabel("acceleration [m/s^2]")
+%xlabel("step")
+%grid on
 
-subplot(2, 3, 2)
-plot(t9, acc_y)
-title("Accelerometer axis-Y")
-ylabel("acceleration [m/s^2]")
-xlabel("step")
-grid on
+%subplot(2, 3, 2)
+%plot(t9, acc_y)
+%title("Accelerometer axis-Y")
+%ylabel("acceleration [m/s^2]")
+%xlabel("step")
+%grid on
 
-subplot(2, 3, 3)
-plot(t9, acc_z)
-title("Accelerometer axis-Z")
-ylabel("acceleration [m/s^2]")
-xlabel("step")
-grid on
+%subplot(2, 3, 3)
+%plot(t9, acc_z)
+%title("Accelerometer axis-Z")
+%ylabel("acceleration [m/s^2]")
+%xlabel("step")
+%grid on
 
-subplot(2, 3, 4)
-plot(t9, gyr_x)
-title("Gyro axis-X")
-ylabel("angular velocity [rad/s]")
-xlabel("step")
-grid on
+%subplot(2, 3, 4)
+%plot(t9, gyr_x)
+%title("Gyro axis-X")
+%ylabel("angular velocity [rad/s]")
+%xlabel("step")
+%grid on
 
-subplot(2, 3, 5)
-plot(t9, gyr_y)
-title("Gyro axis-Y")
-ylabel("angular velocity [rad/s]")
-xlabel("step")
-grid on
+%subplot(2, 3, 5)
+%plot(t9, gyr_y)
+%title("Gyro axis-Y")
+%ylabel("angular velocity [rad/s]")
+%xlabel("step")
+%grid on
 
-subplot(2, 3, 6)
-plot(t9, gyr_z)
-title("Gyro axis-Z")
-ylabel("angular velocity [rad/s]")
-xlabel("step")
-grid on
+%subplot(2, 3, 6)
+%plot(t9, gyr_z)
+%title("Gyro axis-Z")
+%ylabel("angular velocity [rad/s]")
+%xlabel("step")
+%grid on
 
 
 % reference https://jp.mathworks.com/help/matlab/data_analysis/plotting-data.html

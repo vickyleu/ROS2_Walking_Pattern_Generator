@@ -6,7 +6,9 @@ namespace foot_step_planner
     auto foot_step_ptr = std::make_unique<control_plugin_base::FootStep>();
     
     foot_step_ptr->walking_step_time = WALKING_CYCLE_;  // 歩行周期[s]
-    foot_step_ptr->foot_pos = {  // 着地位置{x, y}[m]
+    
+    // world
+/*    foot_step_ptr->foot_pos = {  // 着地位置{x, y}[m]
       {0.0, 0.037},
       {0.0, 0.074},
       {0.03, 0.0},
@@ -15,7 +17,20 @@ namespace foot_step_planner
       {0.12, 0.074},
       {0.12, 0.037},
       {0.12, 0.037}
+    }; */
+
+    // local
+    foot_step_ptr->foot_pos = {
+      {0.0, 0.0},
+      {0.0, 0.037},
+      {0.03, -0.037},
+      {0.03, 0.037},
+      {0.03, -0.037},
+      {0.03, 0.037},
+      {0.0, 0.0},
+      {0.0, 0.0}
     };
+    
     foot_step_ptr->waist_height = WAIST_HEIGHT_;
     //foot_step_ptr->waist_height = 171.856 / 1000;  // 腰高さ
 

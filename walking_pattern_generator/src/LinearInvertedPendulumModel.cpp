@@ -11,10 +11,18 @@ namespace walking_pattern_generator
 
     // foot_step_plannerの返り値をコピーして、３次元線形倒立振子用に調整する。ローカル変数。
     control_plugin_base::FootStep foot_step_LIPM = *foot_step_ptr;
-    double WAIST_POS_Y_ = 0.037;  // 腰関節のY軸の絶対値。TODO: URDFモデルから得たい。
     for(uint32_t tag = 0; tag < foot_step_LIPM.foot_pos.size(); tag++) {
-      if(tag != 0) foot_step_LIPM.foot_pos[tag][0] += foot_step_LIPM.foot_pos[tag-1][0];
-      foot_step_LIPM.foot_pos[tag][1] += WAIST_POS_Y_;
+      if(tag > 1) foot_step_LIPM.foot_pos[tag][0] += foot_step_LIPM.foot_pos[tag-1][0];  // X軸をGlobal座標系に修正する。
+      // Y軸は、直線であれば、Local座標系とGlobal座標系が一致する。
+      // TODO: カーブするPathにも対応するために、Y軸値をGlobal座標にできる式を適用するべき。
+      // if(tag > 2) {  // 一旦、カーブ用の式は放置
+      //   if(std::abs(foot_step_LIPM.foot_pos[tag][1]) == std::abs(foot_step_LIPM.foot_pos[tag-1][1]) - std::abs(foot_step_LIPM.foot_pos[tag-2][1])) {  // 歩行停止時
+
+      //   }
+      //   else {
+      //     foot_step_LIPM.foot_pos[tag][1] += foot_step_LIPM.foot_pos[tag][1] - foot_step_LIPM.foot_pos[tag-2][1];  // TODO: 直線には適用可能だが、歩行終了時にだめ。カーブだと未検証。
+      //   }
+      // }
     }
 
     // LOG: Logを吐くファイルを指定
@@ -31,7 +39,8 @@ namespace walking_pattern_generator
 
     // 歩行素片の始端の重心位置・速度 (World座標系)
     std::vector<std::array<double, 2>> CoG_2D_Pos_0;
-    CoG_2D_Pos_0.push_back({0, 0.037});
+    //CoG_2D_Pos_0.push_back({0, 0.037});
+    CoG_2D_Pos_0.push_back({0, 0});
     double dx_0 = 0;
     double dy_0 = 0;
     // 理想の重心位置・速度 (World座標系)
@@ -145,14 +154,6 @@ namespace walking_pattern_generator
       walking_time += CONTROL_CYCLE_;
     }
 
-    // Y座標値の修正（右足->胴体）
-      // TODO: バカバカしいので、はじめから胴体投影点で歩行パターンを生成するようにしたい。
-    for(long unsigned int step = 0; step < walking_pattern_ptr->cc_cog_pos_ref.size(); step++) {
-      walking_pattern_ptr->cc_cog_pos_ref[step][1] -= foot_step_LIPM.foot_pos[0][1];
-    }
-    for(long unsigned int step = 0; step < walking_pattern_ptr->wc_foot_land_pos_ref.size(); step++) {
-      walking_pattern_ptr->wc_foot_land_pos_ref[step][1] -= foot_step_LIPM.foot_pos[0][1];
-    }
 
     // LOG: plot用
       // TODO: 胴体投影点で歩行パターンを生成すればココも不要になって、生成のループ内に記述できる。
@@ -170,7 +171,7 @@ namespace walking_pattern_generator
       }
       WPG_log_WalkingPttern << walking_pattern_ptr->cc_cog_pos_ref[control_step][0] << " " << walking_pattern_ptr->cc_cog_pos_ref[control_step][1] << " " 
                 << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][0] << " " << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][1] << " " 
-                << foot_step_LIPM.foot_pos[walking_step][0] << " " << foot_step_LIPM.foot_pos[walking_step][1]-foot_step_LIPM.foot_pos[0][1]
+                << foot_step_LIPM.foot_pos[walking_step][0] << " " << foot_step_LIPM.foot_pos[walking_step][1]
       << std::endl;
       control_step++;
       walking_time += CONTROL_CYCLE_;

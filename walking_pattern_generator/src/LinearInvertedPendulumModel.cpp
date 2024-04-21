@@ -9,21 +9,24 @@ namespace walking_pattern_generator
   ) {
     std::unique_ptr<control_plugin_base::WalkingPattern> walking_pattern_ptr = std::make_unique<control_plugin_base::WalkingPattern>();
 
-    // // LOG: Logを吐くファイルを指定
+    // foot_step_plannerの返り値をコピーして、３次元線形倒立振子用に調整する。ローカル変数。
+    control_plugin_base::FootStep foot_step_LIPM = *foot_step_ptr;
+    double WAIST_POS_Y_ = 0.037;  // 腰関節のY軸の絶対値。TODO: URDFモデルから得たい。
+    for(uint32_t tag = 0; tag < foot_step_LIPM.foot_pos.size(); tag++) {
+      if(tag != 0) foot_step_LIPM.foot_pos[tag][0] += foot_step_LIPM.foot_pos[tag-1][0];
+      foot_step_LIPM.foot_pos[tag][1] += WAIST_POS_Y_;
+    }
+
+    // LOG: Logを吐くファイルを指定
     std::ofstream WPG_log_WalkingPttern;
     std::string WPG_log_WalkingPttern_path = "src/Log/WPG_log_WalkingPattern.dat";
     WPG_log_WalkingPttern.open(WPG_log_WalkingPttern_path, std::ios::out);
 
-    // 制御周期
-    // const float CONTROL_CYCLE_ = 0.01;  // [s]
-
     // 歩行パラメータの最終着地時間[s]を抽出
-    float walking_time_max = WALKING_CYCLE_ * (foot_step_ptr->foot_pos.size()-1);
+    float walking_time_max = WALKING_CYCLE_ * (foot_step_LIPM.foot_pos.size()-1);
 
     // 時間, 時定数
     float t = 0;  // 0 ~ 支持脚切り替え時間
-    //float WALKING_CYCLE_ = WALKING_CYCLE_;  // 支持脚切り替えタイミング. 歩行素片終端時間
-    // float T_dsup = 0.5;  // 両脚支持期間
     float T_c = std::sqrt(WAIST_POS_Z_ / 9.81);  // 時定数
 
     // 歩行素片の始端の重心位置・速度 (World座標系)
@@ -59,13 +62,13 @@ namespace walking_pattern_generator
     S = std::sinh(WALKING_CYCLE_ / T_c);
     C = std::cosh(WALKING_CYCLE_ / T_c);
     // 次の歩行素片のパラメータを計算 
-    x_bar = (foot_step_ptr->foot_pos[walking_step + 1][0] - foot_step_ptr->foot_pos[walking_step][0]) / 2;
-    y_bar = (foot_step_ptr->foot_pos[walking_step + 1][1] - foot_step_ptr->foot_pos[walking_step][1]) / 2;
+    x_bar = (foot_step_LIPM.foot_pos[walking_step + 1][0] - foot_step_LIPM.foot_pos[walking_step][0]) / 2;
+    y_bar = (foot_step_LIPM.foot_pos[walking_step + 1][1] - foot_step_LIPM.foot_pos[walking_step][1]) / 2;
     dx_bar = ((C + 1) / (T_c * S)) * x_bar;
     dy_bar = ((C - 1) / (T_c * S)) * y_bar;
     // 次の歩行素片の最終状態の目標値
-    x_d = foot_step_ptr->foot_pos[walking_step][0] + x_bar;
-    y_d = foot_step_ptr->foot_pos[walking_step][1] + y_bar;
+    x_d = foot_step_LIPM.foot_pos[walking_step][0] + x_bar;
+    y_d = foot_step_LIPM.foot_pos[walking_step][1] + y_bar;
     dx_d = dx_bar;
     dy_d = dy_bar;
     // 評価関数を最小化する着地位置の計算
@@ -98,8 +101,6 @@ namespace walking_pattern_generator
       if(t < WALKING_CYCLE_ - 0.01) {
         // 値の更新
         t += CONTROL_CYCLE_;
-        // 着地位置の維持（重心要素の配列の要素数と一致させるため）
-        // walking_pattern_ptr->wc_foot_land_pos_ref.push_back(walking_pattern_ptr->wc_foot_land_pos_ref.back());
       }
       else if(t >= WALKING_CYCLE_ - 0.01) {
         // stepの更新
@@ -118,14 +119,14 @@ namespace walking_pattern_generator
         dy_0 = walking_pattern_ptr->cc_cog_vel_ref[control_step][1];
 
         // 次の歩行素片のパラメータを計算 
-        x_bar = (foot_step_ptr->foot_pos[walking_step + 1][0] - foot_step_ptr->foot_pos[walking_step][0]) / 2;
-        y_bar = (foot_step_ptr->foot_pos[walking_step + 1][1] - foot_step_ptr->foot_pos[walking_step][1]) / 2;
+        x_bar = (foot_step_LIPM.foot_pos[walking_step + 1][0] - foot_step_LIPM.foot_pos[walking_step][0]) / 2;
+        y_bar = (foot_step_LIPM.foot_pos[walking_step + 1][1] - foot_step_LIPM.foot_pos[walking_step][1]) / 2;
         dx_bar = ((C + 1) / (T_c * S)) * x_bar;
         dy_bar = ((C - 1) / (T_c * S)) * y_bar;
 
         // 次の歩行素片の最終状態の目標値
-        x_d = foot_step_ptr->foot_pos[walking_step][0] + x_bar;
-        y_d = foot_step_ptr->foot_pos[walking_step][1] + y_bar;
+        x_d = foot_step_LIPM.foot_pos[walking_step][0] + x_bar;
+        y_d = foot_step_LIPM.foot_pos[walking_step][1] + y_bar;
         dx_d = dx_bar;
         dy_d = dy_bar;
 
@@ -143,17 +144,14 @@ namespace walking_pattern_generator
       control_step++;
       walking_time += CONTROL_CYCLE_;
     }
-    // const int CONTROL_STEP_MAX = control_step;  // 制御周期数の最大値を記憶
-
-    // std::cout << CONTROL_STEP_MAX << " " << control_step << " " << walking_pattern_ptr->cc_cog_pos_ref.size() << " " << std::endl;
 
     // Y座標値の修正（右足->胴体）
       // TODO: バカバカしいので、はじめから胴体投影点で歩行パターンを生成するようにしたい。
     for(long unsigned int step = 0; step < walking_pattern_ptr->cc_cog_pos_ref.size(); step++) {
-      walking_pattern_ptr->cc_cog_pos_ref[step][1] -= foot_step_ptr->foot_pos[0][1];
+      walking_pattern_ptr->cc_cog_pos_ref[step][1] -= foot_step_LIPM.foot_pos[0][1];
     }
     for(long unsigned int step = 0; step < walking_pattern_ptr->wc_foot_land_pos_ref.size(); step++) {
-      walking_pattern_ptr->wc_foot_land_pos_ref[step][1] -= foot_step_ptr->foot_pos[0][1];
+      walking_pattern_ptr->wc_foot_land_pos_ref[step][1] -= foot_step_LIPM.foot_pos[0][1];
     }
 
     // LOG: plot用
@@ -172,7 +170,7 @@ namespace walking_pattern_generator
       }
       WPG_log_WalkingPttern << walking_pattern_ptr->cc_cog_pos_ref[control_step][0] << " " << walking_pattern_ptr->cc_cog_pos_ref[control_step][1] << " " 
                 << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][0] << " " << walking_pattern_ptr->wc_foot_land_pos_ref[walking_step][1] << " " 
-                << foot_step_ptr->foot_pos[walking_step][0] << " " << foot_step_ptr->foot_pos[walking_step][1]-(foot_step_ptr->foot_pos[0][1])
+                << foot_step_LIPM.foot_pos[walking_step][0] << " " << foot_step_LIPM.foot_pos[walking_step][1]-foot_step_LIPM.foot_pos[0][1]
       << std::endl;
       control_step++;
       walking_time += CONTROL_CYCLE_;

@@ -114,6 +114,11 @@ namespace robot_manager
       }
     }
 
+    // DEBUG
+    if(control_step_ == walking_pattern_ptr_->cc_cog_pos_ref.size()+2) {
+      std::cout << "Control Step Finish." << std::endl;
+    }
+
     // update
     control_step_++;
     t_ += CONTROL_CYCLE_;

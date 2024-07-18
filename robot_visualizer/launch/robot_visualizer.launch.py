@@ -43,7 +43,7 @@ def generate_launch_description():
         "/joint_states/position[9]",  # DEBUG: ここをDEBUG用のPublish Topicを指定すれば良い．んで，これをparameterから指定するようにすれば良い．
       ]
     )
-    rqt_plot_launch_delay = TimerAction(
+    rqt_plot_launch_delay = TimerAction(  # TODO: 時間でディレイするのはスマートな方法ではないと思われ．LifeCycleを突っ込んだほうが良い？
       period = 1.0, 
       actions = [rqt_plot_launch]
     )

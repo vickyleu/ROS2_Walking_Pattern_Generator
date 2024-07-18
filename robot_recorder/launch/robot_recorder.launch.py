@@ -27,7 +27,7 @@ def generate_launch_description():
       debug_mode_yaml["using_walkingPattern_recorder"] + \
       debug_mode_yaml["using_walkingStabilization_recorder"] + \
       debug_mode_yaml["using_jointState_recorder"] + \
-      debug_mode_yaml["using_rosbag2"] > 0:  # 何もRecordしないなら，Dirを作らない処理．
+      debug_mode_yaml["using_rosbag2"] > 0:  # 何もRecordしないなら，Dirを作らない処理．TODO: これで良いのか？User側を必要最低限にしたくてこうなっている．
     launch_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     #record_dir_path = "./src/ROS2_Walking_Pattern_Generator/Record/" + launch_datetime

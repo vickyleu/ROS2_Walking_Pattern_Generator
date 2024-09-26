@@ -8,7 +8,7 @@ A walking control software for humanoid robots using ROS 2. We are proceeding wi
 
 ## Emvironment
 It is compatible with the following OS:<br>
-* Ubuntu 22.04 ([official](https://ubuntu.com/desktop))
+* Ubuntu 22.04 (no WSL) ([official](https://ubuntu.com/desktop))
 
 Not tested on other OSes, but may work.<br>
 
@@ -46,6 +46,8 @@ git clone https://github.com/open-rdc/ROS2_Walking_Pattern_Generator.git
   Example:
 ```bash
 cd ~/ros2_ws/
+colcon build --symlink-install --packages-up-to robot_messages
+source install/setup.bash
 colcon build --symlink-install
 source install/setup.bash
 ```

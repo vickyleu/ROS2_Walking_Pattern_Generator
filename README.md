@@ -8,15 +8,15 @@ A walking control software for humanoid robots using ROS 2. We are proceeding wi
 
 ## Emvironment
 It is compatible with the following OS:<br>
-* Ubuntu 22.04 (no WSL) ([official](https://ubuntu.com/desktop))
+* Ubuntu 24.04 (no WSL) ([official](https://ubuntu.com/desktop))
 
 Not tested on other OSes, but may work.<br>
 
 ## Dependencies
 It depends on the following software:<br>
-* ROS 2 Humble ([official](https://docs.ros.org/en/humble/index.html))
-* Eigen 3.4 ([official](https://eigen.tuxfamily.org/index.php?title=Main_Page))
-* Webots R2023b ([official](https://cyberbotics.com/))
+* ROS 2 Jazzy ([official](https://docs.ros.org/en/jazzy/index.html))
+* Eigen ([official](https://eigen.tuxfamily.org/index.php?title=Main_Page))
+* Webots R2025a ([official](https://cyberbotics.com/))
 * webots_ros2 ([official](https://github.com/cyberbotics/webots_ros2))
 
 The version of this dependency is determined based on your development environment, so it may work with other versions.<br>
@@ -26,10 +26,10 @@ The version of this dependency is determined based on your development environme
 ### Step1
   Please install dependencies.
 
-  * Install ROS 2 -> [official document](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
+  * Install ROS 2 -> [official document](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html)
   * Install Eigen ->  Installed together with ROS 2.
   * Install Webots -> [official document](https://cyberbotics.com/doc/guide/installation-procedure)
-  * Install webots_ros2 -> [official document](https://docs.ros.org/en/humble/Tutorials/Advanced/Simulators/Webots/Installation-Ubuntu.html)
+  * Install webots_ros2 -> [official document](https://docs.ros.org/en/jazzy/Tutorials/Advanced/Simulators/Webots/Installation-Ubuntu.html)
 
 ### Step2
   Please clone this repository.<br>

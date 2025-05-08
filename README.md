@@ -12,6 +12,13 @@ It is compatible with the following OS:<br>
 
 Not tested on other OSes, but may work.<br>
 
+> [!NOTE]
+> If you use WSL, 
+> 1. Install WSL2, ROS 2, webots_ros2 and Webots (Windows). reference: [official](https://docs.ros.org/en/jazzy/Tutorials/Advanced/Simulators/Webots/Installation-Windows.html)
+> 2. Change `WEBOTS_CONTROLLER_URL`. See `./webots_robot_handler/launch/start_launch.py`.
+> 3. Disable vEthernet (WSL) Firewall.
+
+
 ## Dependencies
 It depends on the following software:<br>
 * ROS 2 Jazzy ([official](https://docs.ros.org/en/jazzy/index.html))

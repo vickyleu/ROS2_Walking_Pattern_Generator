@@ -22,7 +22,8 @@ def generate_launch_description():
     package = "webots_ros2_driver",
     executable = "driver",
     output = "screen",
-    additional_env = {"WEBOTS_CONTROLLER_URL": "ipc://1234/ROBOTIS_OP2"},
+    #additional_env = {"WEBOTS_CONTROLLER_URL": "ipc://1234/ROBOTIS_OP2"},  # Linuxの場合
+    additional_env = {"WEBOTS_CONTROLLER_URL": "tcp://172.29.144.1:1234/ROBOTIS_OP2"},  # WSL2の場合
     parameters = [
       {"robot_description": robot_description},
       {'use_sim_time': True}

@@ -4,7 +4,7 @@
       # setting visualizer
       using_rviz: false
       rviz_file: display.rviz
-      using_rqt: true
+      using_rqt: false
       # setting recorder
       using_feedback_recorder: false
       using_footStep_recorder: false

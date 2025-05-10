@@ -24,8 +24,8 @@ import os
 #   return str_vec
 
 # TODO: BringUpとかに置くべきYAMLファイルを読んで、urdf_pathとrobot_nameを宣言するべき。
-robot_name = "robotis_op2"
-urdf_name = "robotis_op2.urdf"
+robot_name = "rdc_robot_v1"
+urdf_name = "simple_model.urdf"
 print("[INFO] Robot name is " + robot_name)
 try:
   models_dir_path = "../../robot_description/models/" + robot_name + "/urdf"
@@ -105,6 +105,7 @@ for i in range(0, len(urdf_all_joints)):
       if parent_link_name != child_link_names_list_lists[j][k]:  # parent_nameが一致しない場合
 
         if  j == len(child_link_names_list_lists)-1  and  k == len(child_link_names_list_lists[j])-1:  # parent_nameが全探索でも見つからないので、新childを新listをappend
+          # print("a ",j)
           joint_obj_list_lists.append([urdf_all_joints[i]])
           joint_names_list_lists.append([urdf_all_joints[i].attrib["name"]])
           child_link_names_list_lists.append([urdf_all_joints[i].find("child").attrib["link"]])
@@ -138,6 +139,7 @@ for i in range(0, len(urdf_all_joints)):
           break
         
         else:
+          # print("b ",j)
           continue
       
       elif parent_link_name == child_link_names_list_lists[j][k]:  # parent_nameが既存child_nameと一致した場合
@@ -145,6 +147,7 @@ for i in range(0, len(urdf_all_joints)):
         if k == len(child_link_names_list_lists[j])-1:  # parentがlistの末端なので、後ろにくっつける
 
           if parent_link_name in parent_link_name_multi_child:
+            # print("c ",j)
             joint_obj_list_lists.append([urdf_all_joints[i]])
             joint_names_list_lists.append([urdf_all_joints[i].attrib["name"]])
             child_link_names_list_lists.append([urdf_all_joints[i].find("child").attrib["link"]])
@@ -173,6 +176,7 @@ for i in range(0, len(urdf_all_joints)):
             break
 
           else:
+            # print("d ",j)
             joint_obj_list_lists[j].append(urdf_all_joints[i])
             joint_names_list_lists[j].append(urdf_all_joints[i].attrib["name"])
             child_link_names_list_lists[j].append(urdf_all_joints[i].find("child").attrib["link"])
@@ -192,6 +196,7 @@ for i in range(0, len(urdf_all_joints)):
             break
 
         else:  # 単parent複childなので、既存parent未満を新listとしてappend, 次に新childを新listとしてappend
+          # print("e ",j)
           parent_link_name_multi_child.append(parent_link_name)
           
           joint_obj_list_lists.append(joint_obj_list_lists[j][k+1:])
@@ -219,6 +224,7 @@ for i in range(0, len(urdf_all_joints)):
           joint_postures_list_lists.append([(urdf_all_joints[i].find("origin").attrib["rpy"])])
 
           if fixed_type == False:
+            # print("f ",j)
             
             fixed_joint_cnt_in_tree = len(set(fixed_joints_name) & set(joint_names_list_lists[j]))
 
@@ -249,6 +255,24 @@ for i in range(0, len(urdf_all_joints)):
             nonfixed_joint_postures_list_lists.append(nonfixed_joint_postures_list_lists[j][k+1-fixed_joint_cnt_in_tree:])
             del nonfixed_joint_postures_list_lists[-2][k+1-fixed_joint_cnt_in_tree:]
             nonfixed_joint_postures_list_lists.append([(urdf_all_joints[i].find("origin").attrib["rpy"])])
+
+          if fixed_type == True:
+            # print("g ",j)
+
+            nonfixed_joint_obj_list_lists.append([])
+            nonfixed_joint_names_list_lists.append([])
+            nonfixed_child_link_names_list_lists.append([])
+            nonfixed_joint_nums_list_lists.append([])
+            nonfixed_joint_unit_vectors_list_lists.append([])
+            nonfixed_joint_link_lengths_list_lists.append([])
+            nonfixed_joint_postures_list_lists.append([])
+            nonfixed_joint_obj_list_lists.append([])
+            nonfixed_joint_names_list_lists.append([])
+            nonfixed_child_link_names_list_lists.append([])
+            nonfixed_joint_nums_list_lists.append([])
+            nonfixed_joint_unit_vectors_list_lists.append([])
+            nonfixed_joint_link_lengths_list_lists.append([])
+            nonfixed_joint_postures_list_lists.append([])
 
           break
 

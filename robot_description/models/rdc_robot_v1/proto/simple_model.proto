@@ -26,6 +26,18 @@ PROTO simple_model [
     synchronization IS synchronization
     selfCollision IS selfCollision
     children [
+      Accelerometer {  # Add
+        translation 0.0 0.0 0.01  # TODO: Need Change
+        rotation 0.0 0.0 0.0 1.0  # dont need change (maybe, Quaternion)
+        # lookupTable[0 0 0 1024 1024 1024]
+        name "Accelerometer"
+      }
+      Gyro {  # Add
+        translation 0.0 0.0 0.01  # TODO: Need Change
+        rotation 0.0 0.0 0.0 1.0  # dont need change (maybe, Quaternion)
+        # lookupTable[0 0 0 1024 1024 1024]
+        name "Gyro"
+      }
       Solid {
         translation 0.000000 0.000000 0.333000
         children [
@@ -202,7 +214,7 @@ PROTO simple_model [
                               boundingObject USE link_heel2end
                               physics Physics {
                                 density -1
-                                mass 0.000000
+                                mass 0.000001
                               }
                             }
                           ]
@@ -378,7 +390,7 @@ PROTO simple_model [
                               boundingObject USE link_heel2end
                               physics Physics {
                                 density -1
-                                mass 0.000000
+                                mass 0.000001
                               }
                             }
                           ]

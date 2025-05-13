@@ -6,6 +6,8 @@ import launch
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from webots_ros2_driver.webots_launcher import WebotsLauncher
+from webots_ros2_driver.utils import controller_url_prefix
+
 
 def generate_launch_description():
   package_dir = get_package_share_directory("webots_robot_handler")
@@ -15,6 +17,8 @@ def generate_launch_description():
     world = os.path.join(package_dir, "worlds", "webots_simple_world.wbt")
   )
 
+  url = controller_url_prefix()
+  print("prefix: " + url)
   # webots_robot_handler (C++_plugin of webots_ros2_driver)
   # TODO: 書き方が古くてWarningが出てる。WebotsControllerを使う方法に書き換えるべき。
     # ref: https://github.com/cyberbotics/webots_ros2/tree/master/webots_ros2_mavic
@@ -23,7 +27,7 @@ def generate_launch_description():
     executable = "driver",
     output = "screen",
     #additional_env = {"WEBOTS_CONTROLLER_URL": "ipc://1234/ROBOTIS_OP2"},  # Linuxの場合
-    additional_env = {"WEBOTS_CONTROLLER_URL": "tcp://172.29.144.1:1234/ROBOTIS_OP2"},  # WSL2の場合
+    additional_env = {"WEBOTS_CONTROLLER_URL": url + "ROBOTIS_OP2"},  # WSL2の場合
     parameters = [
       {"robot_description": robot_description},
       {'use_sim_time': True}

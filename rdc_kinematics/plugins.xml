@@ -1,0 +1,11 @@
+<library path="rdc_kinematics">
+  <class type="rdc_kinematics::RDCForwardKinematics" base_class_type="control_plugin_base::ForwardKinematics">
+    <description>rdc_robot forward_kinematics plugin.</description>
+  </class>
+  <class type="rdc_kinematics::RDCInverseKinematics" base_class_type="control_plugin_base::InverseKinematics">
+    <description>rdc_robot inverse_kinematics plugin.</description>
+  </class>
+  <class type="rdc_kinematics::RDCJacobian" base_class_type="control_plugin_base::Jacobian">
+    <description>rdc_robot jacobian plugin.</description>
+  </class>
+</library>

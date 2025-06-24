@@ -38,3 +38,7 @@ namespace rdc_kinematics
 
   }
 }
+
+
+#include <pluginlib/class_list_macros.hpp>
+PLUGINLIB_EXPORT_CLASS(rdc_kinematics::RDC_InverseKinematics, control_plugin_base::InverseKinematics)

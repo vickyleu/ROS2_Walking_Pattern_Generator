@@ -107,3 +107,7 @@ namespace rdc_kinematics
   }
 
 }
+
+
+#include <pluginlib/class_list_macros.hpp>
+PLUGINLIB_EXPORT_CLASS(rdc_kinematics::RDC_ForwardKinematics, control_plugin_base::ForwardKinematics)

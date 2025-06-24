@@ -22,11 +22,15 @@ namespace rdc_kinematics
 
       void jacobian(
         const std::shared_ptr<control_plugin_base::LegStates_ToJac> leg_states_jac_ptr,
-        Eigen::Matrix<double, 3, 3>& leg_jacobian
+        Eigen::Matrix<double, 6, 3>& leg_jacobian
       ) override;
+      void jacobian(
+        const std::shared_ptr<control_plugin_base::LegStates_ToJac> ,  // 未使用の引数は、引数名を省略することでWarningを回避できる
+        Eigen::Matrix<double, 6, 6>& 
+      ) override {};
 
     private:
-      std::shared_ptr<control_plugin_base::ForwardKinematics> fk_;
+      std::shared_ptr<control_plugin_base::ForwardKinematics> fk_ = nullptr;
   };
 }
 

@@ -12,11 +12,21 @@ namespace rdc_kinematics
     public:
       RDC_ForwardKinematics(){}
       ~RDC_ForwardKinematics(){}
+
       void forward_kinematics(
+        std::shared_ptr<control_plugin_base::LegStates_ToFK> ,
+        Eigen::Vector3d& 
+      ) override {};
+      void forward_kinematics(
+        std::shared_ptr<control_plugin_base::LegStates_ToFK> ,
+        const int ,
+        Eigen::Vector3d& 
+      ) override {};
+      void forward_kinematics_3dof(
         std::shared_ptr<control_plugin_base::LegStates_ToFK> leg_states_ptr,
         Eigen::Vector3d& end_eff_pos_ptr
       ) override;
-      void forward_kinematics(
+      void forward_kinematics_3dof(
         std::shared_ptr<control_plugin_base::LegStates_ToFK> leg_states_ptr,
         const int joint_point,
         Eigen::Vector3d& end_eff_pos_ptr
@@ -27,10 +37,10 @@ namespace rdc_kinematics
       );
 
     private:
-      Eigen::Matrix3d Rx(double rad = 0);
-      Eigen::Matrix3d Ry(double rad = 0);
-      Eigen::Matrix4d Tx(double rad = 0, const Eigen::Vector3d& pos);  // 同次変換行列
-      Eigen::Matrix4d Ty(double rad = 0, const Eigen::Vector3d& pos);
+      Eigen::Matrix3d Rx(double rad);
+      Eigen::Matrix3d Ry(double rad);
+      Eigen::Matrix4d Tx(double rad, const Eigen::Vector3d& pos);  // 同次変換行列
+      Eigen::Matrix4d Ty(double rad, const Eigen::Vector3d& pos);
   };
 }
 

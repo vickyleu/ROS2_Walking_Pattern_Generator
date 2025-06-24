@@ -35,6 +35,8 @@ namespace rdc_kinematics
     std::array<double, 3>& joint_ang_ptr
   ) {
     // IK (RDC's Leg only)
+    (void)leg_states_ptr;
+    (void)joint_ang_ptr;
 
   }
 }

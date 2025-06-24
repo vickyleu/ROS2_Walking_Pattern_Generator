@@ -17,6 +17,10 @@ namespace rdc_kinematics
         const std::shared_ptr<control_plugin_base::LegStates_ToIK> leg_states_ptr,
         std::array<double, 3>& joint_ang_ptr
       ) override;
+      void inverse_kinematics(
+        const std::shared_ptr<control_plugin_base::LegStates_ToIK> ,
+        std::array<double, 6>& 
+      ) override {};
 
       Eigen::Vector3d Array2Vector(std::array<double, 3> array);  // std::array型をEigen::Vector3d型に変換（３次元）
       Eigen::Matrix3d Array2Matrix(std::array<double, 9> array);  // std::array型をEigen::Matrix3d型に変換（3*3行列）

@@ -6,7 +6,7 @@ namespace rdc_kinematics
 {
   void RDC_Jacobian::jacobian(
     const std::shared_ptr<control_plugin_base::LegStates_ToJac> leg_states_jac_ptr,
-    Eigen::Matrix<double, 3, 3>& leg_jacobian_ptr
+    Eigen::Matrix<double, 6, 3>& leg_jacobian_ptr
   ) {
     leg_jacobian_ptr = MatrixXd::Zero(6, 3);
 
@@ -39,10 +39,10 @@ namespace rdc_kinematics
   }
 
   RDC_Jacobian::RDC_Jacobian() {
-    fk_ = std::make_shared<control_plugin_base::ForwardKinematics>();
+    fk_ = fk_loader.createSharedInstance("rdc_kinematics::RDC_ForwardKinematics");
   }
 }
-
+   
 
 #include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(rdc_kinematics::RDC_Jacobian, control_plugin_base::Jacobian)

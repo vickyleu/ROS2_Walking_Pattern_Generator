@@ -22,7 +22,7 @@ namespace control_plugin_base
       );
       virtual void jacobian(
         const std::shared_ptr<LegStates_ToJac> leg_states_jac_ptr,
-        Eigen::Matrix<double, 3, 3>& leg_jacobian
+        Eigen::Matrix<double, 6, 3>& leg_jacobian
       ); 
       
       virtual ~Jacobian(){}

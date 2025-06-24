@@ -19,9 +19,18 @@ namespace kinematics
       ) override;
       void forward_kinematics(
         std::shared_ptr<control_plugin_base::LegStates_ToFK> leg_states_ptr,
-        int joint_point,
+        const int joint_point,
         Eigen::Vector3d& end_eff_pos_ptr
       ) override;
+      void forward_kinematics_3dof(
+        std::shared_ptr<control_plugin_base::LegStates_ToFK> ,
+        Eigen::Vector3d& 
+      ) override {};
+      void forward_kinematics_3dof(
+        std::shared_ptr<control_plugin_base::LegStates_ToFK> ,
+        const int ,
+        Eigen::Vector3d& 
+      ) override {};
 
       std::array<Eigen::Matrix3d, 6> getR_leg(
         std::array<double, 6> Q_leg

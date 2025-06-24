@@ -21,6 +21,10 @@ namespace kinematics
         const std::shared_ptr<control_plugin_base::LegStates_ToJac> leg_states_jac_ptr,
         Eigen::Matrix<double, 6, 6>& leg_jacobian
       ) override;
+      void jacobian(
+        const std::shared_ptr<control_plugin_base::LegStates_ToJac> ,
+        Eigen::Matrix<double, 6, 3>& 
+      ) override {};
 
     private:
       std::shared_ptr<control_plugin_base::ForwardKinematics> fk_;

@@ -55,7 +55,7 @@ namespace kinematics
   // 関数のオーバーライドをして、joint_pointを入れずに導出できるようにする。 or forで再帰的に回す。
   void Default_ForwardKinematics::forward_kinematics(
     std::shared_ptr<control_plugin_base::LegStates_ToFK> leg_states_ptr,
-    int joint_point,
+    const int joint_point,
     Eigen::Vector3d& end_eff_pos_ptr
   ) {
     std::array<Eigen::Matrix3d, 6> joint_rot = Default_ForwardKinematics::getR_leg(leg_states_ptr->joint_ang);

@@ -18,11 +18,11 @@ namespace control_plugin_base
       virtual void inverse_kinematics(
         const std::shared_ptr<LegStates_ToIK> leg_states_ptr,
         std::array<double, 6>& joint_ang_ptr
-      ) = 0;
+      );
       virtual void inverse_kinematics(
         const std::shared_ptr<LegStates_ToIK> leg_states_ptr,
         std::array<double, 3>& joint_ang_ptr
-      ) = 0;
+      );
       virtual ~InverseKinematics(){}
     
     protected:

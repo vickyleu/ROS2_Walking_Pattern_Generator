@@ -16,7 +16,11 @@ namespace kinematics
       void inverse_kinematics(
         const std::shared_ptr<control_plugin_base::LegStates_ToIK> leg_states_ptr,
         std::array<double, 6>& joint_ang_ptr
-      );
+      ) override;
+      void inverse_kinematics(
+        const std::shared_ptr<control_plugin_base::LegStates_ToIK> ,
+        std::array<double, 3>& 
+      ) override {};
 
       // 便利関数として、他ライブラリにまとめたい
       Eigen::Vector3d Array2Vector(std::array<double, 3> array);  // std::array型をEigen::Vector3d型に変換（３次元）

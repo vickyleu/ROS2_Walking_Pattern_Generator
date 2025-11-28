@@ -22,10 +22,11 @@ class RobotParams:
     HIP_OFFSET_Z = 0.0907 # m (髋关节垂直偏移)
     
     # 步态参数
-    STANDING_HEIGHT = 0.17  # m (站立时髋关节到脚底的距离，稍高一点)
-    STEP_LENGTH = 0.025     # m (步长)
-    STEP_HEIGHT = 0.02      # m (抬脚高度)
-    STEP_PERIOD = 0.8       # s (单步周期)
+    STANDING_HEIGHT = 0.19   # m (站立时髋关节到脚底的距离)
+    STEP_LENGTH = 0.08       # m (步长)
+    STEP_HEIGHT = 0.04       # m (抬脚高度)
+    STEP_PERIOD = 0.9        # s (单步周期)
+    DUTY_FACTOR = 0.6        # 支撑相占比 (>0.5)
 
 # ============== 逆运动学 ==============
 class InverseKinematics3DOF:
@@ -90,6 +91,31 @@ class SimpleWalkingGait:
     def __init__(self):
         self.params = RobotParams()
         self.ik = InverseKinematics3DOF()
+    
+    def _foot_pose(self, leg_phase: float):
+        """
+        根据腿相位（0~1）计算脚底位置 (x, z)
+        - [0, swing_portion) : 摆动期（脚抬起并从后向前摆）
+        - [swing_portion, 1) : 支撑期（脚贴地向后滑动）
+        """
+        H = self.params.STANDING_HEIGHT
+        step_len = self.params.STEP_LENGTH
+        step_h = self.params.STEP_HEIGHT
+        duty = self.params.DUTY_FACTOR
+        swing_portion = max(0.05, 1.0 - duty)  # 防止除 0
+        
+        if leg_phase < swing_portion:
+            # 摆动
+            s = leg_phase / swing_portion  # 0~1
+            x = -step_len / 2 + step_len * s
+            z = -H + step_h * math.sin(math.pi * s)
+        else:
+            # 支撑
+            s = (leg_phase - swing_portion) / duty  # 0~1
+            x = step_len / 2 - step_len * s
+            z = -H
+        
+        return x, z
         
     def compute_joint_angles(self, t):
         """
@@ -97,43 +123,17 @@ class SimpleWalkingGait:
         返回: [l_hip, l_knee, l_ankle, r_hip, r_knee, r_ankle]
         """
         T = self.params.STEP_PERIOD
-        H = self.params.STANDING_HEIGHT
-        step_len = self.params.STEP_LENGTH
-        step_h = self.params.STEP_HEIGHT
-        
-        # 归一化时间
         phase = (t % T) / T  # 0 ~ 1
         
-        # 判断哪条腿在摆动
-        cycle = int(t / T)
-        left_swing = (cycle % 2 == 0)
+        # 左右腿相位错开 180°
+        left_phase = phase
+        right_phase = (phase + 0.5) % 1.0
         
-        # 重心前后摆动（简化：小幅度正弦）
-        com_x_offset = 0.005 * math.sin(2 * math.pi * phase)
+        l_x, l_z = self._foot_pose(left_phase)
+        r_x, r_z = self._foot_pose(right_phase)
         
-        # 计算两腿的脚位置
-        if left_swing:
-            # 左腿摆动，右腿支撑
-            # 右脚（支撑）
-            r_foot_x = -com_x_offset
-            r_foot_z = -H
-            
-            # 左脚（摆动）- 正弦轨迹
-            swing_phase = phase
-            l_foot_x = step_len * (swing_phase - 0.5) - com_x_offset
-            l_foot_z = -H + step_h * math.sin(math.pi * swing_phase)
-        else:
-            # 右腿摆动，左腿支撑
-            l_foot_x = -com_x_offset
-            l_foot_z = -H
-            
-            swing_phase = phase
-            r_foot_x = step_len * (swing_phase - 0.5) - com_x_offset
-            r_foot_z = -H + step_h * math.sin(math.pi * swing_phase)
-        
-        # 逆运动学
-        l_angles = self.ik.solve(l_foot_x, l_foot_z)
-        r_angles = self.ik.solve(r_foot_x, r_foot_z)
+        l_angles = self.ik.solve(l_x, l_z)
+        r_angles = self.ik.solve(r_x, r_z)
         
         return np.concatenate([l_angles, r_angles])
     
@@ -203,18 +203,26 @@ def run_simulation():
     gait = SimpleWalkingGait()
     
     # 关节名称和对应的符号（适配 URDF 中的轴定义）
-    # URDF: l_hip_pitch axis=(0,-1,0), l_knee axis=(0,-1,0), l_ankle_pitch axis=(0,1,0)
-    #       r_hip_pitch axis=(0,-1,0), r_knee axis=(0,-1,0), r_ankle_pitch axis=(0,1,0)
-    # 我们的IK: 正值=向前踢腿
-    # URDF: axis=(0,-1,0) 意味着正角度绕-Y轴旋转，即向后踢腿
-    # 所以需要取反
+    # URDF: l_hip_pitch axis=(0,-1,0) -> 正=后摆
+    #       l_knee axis=(0,-1,0)      -> 正=后摆(弯曲)
+    #       l_ankle_pitch axis=(0,1,0)-> 正=上勾
+    #
+    # IK 输出定义:
+    #   hip: 正=前摆
+    #   knee: 负=弯曲(后摆)
+    #   ankle: 正=上勾(抵消hip+knee)
+    #
+    # 映射关系:
+    #   hip: IK(正) -> URDF(负) => -1
+    #   knee: IK(负) -> URDF(正) => -1
+    #   ankle: IK(正) -> URDF(正) => 1
     joint_config = [
-        ('l_hip_pitch', 1),    # axis=(0,-1,0)，我们的正=URDF的负
-        ('l_knee', 1),         # axis=(0,-1,0)
-        ('l_ankle_pitch', -1), # axis=(0,1,0)，方向相反
-        ('r_hip_pitch', 1),    # axis=(0,-1,0)
-        ('r_knee', 1),         # axis=(0,-1,0)
-        ('r_ankle_pitch', -1), # axis=(0,1,0)
+        ('l_hip_pitch', -1),
+        ('l_knee', -1),
+        ('l_ankle_pitch', 1),
+        ('r_hip_pitch', -1),
+        ('r_knee', -1),
+        ('r_ankle_pitch', 1),
     ]
     
     # 设置初始站立姿态

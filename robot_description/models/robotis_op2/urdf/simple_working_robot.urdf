@@ -177,7 +177,7 @@
 
   <link name="l_shin_link">
     <visual>
-      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <origin rpy="0 0 -1.5708" xyz="0 0 -0.0465"/>
       <geometry>
         <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_left_shin.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -307,7 +307,7 @@
 
   <link name="r_shin_link">
     <visual>
-      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <origin rpy="0 0 -1.5708" xyz="0 0 -0.0465"/>
       <geometry>
         <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_right_shin.stl" scale="0.001 0.001 0.001"/>
       </geometry>

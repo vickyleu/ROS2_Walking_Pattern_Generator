@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<robot name="simple_walking_robot">
+    <webots>
+        <plugin type="webots_robot_handler::SimpleWalkingRobotHandler" />
+    </webots>
+</robot>
+

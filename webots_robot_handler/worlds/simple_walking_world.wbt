@@ -1,0 +1,260 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+
+WorldInfo {
+  info [
+    "Simple Walking Robot World"
+  ]
+  title "Simple Walking Robot"
+  basicTimeStep 10
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.2 0.97 0.1 0.8
+  position 0.8 0.5 0.8
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 2 2
+  floorTileSize 0.5 0.5
+  wallHeight 0.05
+}
+Robot {
+  translation 0 0.28 0
+  rotation 0 1 0 0
+  children [
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 0.5 0.5
+        roughness 0.5
+        metalness 0.3
+      }
+      geometry Box {
+        size 0.09 0.18 0.25
+      }
+    }
+    DEF L_HIP_JOINT HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor 0.037 -0.0907 0
+      }
+      device [
+        RotationalMotor {
+          name "l_hip_pitch"
+          maxTorque 2.8
+        }
+        PositionSensor {
+          name "l_hip_pitch_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.037 -0.0907 0
+        children [
+          DEF L_THIGH Shape {
+            appearance PBRAppearance {
+              baseColor 0.6 0.6 0.6
+            }
+            geometry Cylinder {
+              height 0.093
+              radius 0.02
+            }
+          }
+          DEF L_KNEE_JOINT HingeJoint {
+            jointParameters HingeJointParameters {
+              axis 0 0 -1
+              anchor 0 -0.093 0
+            }
+            device [
+              RotationalMotor {
+                name "l_knee"
+                maxTorque 2.8
+              }
+              PositionSensor {
+                name "l_knee_sensor"
+              }
+            ]
+            endPoint Solid {
+              translation 0 -0.093 0
+              children [
+                DEF L_SHIN Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.6 0.6 0.6
+                  }
+                  geometry Cylinder {
+                    height 0.093
+                    radius 0.018
+                  }
+                }
+                DEF L_ANKLE_JOINT HingeJoint {
+                  jointParameters HingeJointParameters {
+                    axis 0 0 1
+                    anchor 0 -0.093 0
+                  }
+                  device [
+                    RotationalMotor {
+                      name "l_ankle_pitch"
+                      maxTorque 2.8
+                    }
+                    PositionSensor {
+                      name "l_ankle_pitch_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    translation 0 -0.093 0
+                    children [
+                      DEF L_FOOT Shape {
+                        appearance PBRAppearance {
+                          baseColor 0.4 0.4 0.4
+                        }
+                        geometry Box {
+                          size 0.04 0.03 0.08
+                        }
+                      }
+                    ]
+                    name "l_foot"
+                    boundingObject USE L_FOOT
+                    physics Physics {
+                      density -1
+                      mass 0.08
+                    }
+                  }
+                }
+              ]
+              name "l_shin"
+              boundingObject USE L_SHIN
+              physics Physics {
+                density -1
+                mass 0.07
+              }
+            }
+          }
+        ]
+        name "l_thigh"
+        boundingObject USE L_THIGH
+        physics Physics {
+          density -1
+          mass 0.12
+        }
+      }
+    }
+    DEF R_HIP_JOINT HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 -1
+        anchor -0.037 -0.0907 0
+      }
+      device [
+        RotationalMotor {
+          name "r_hip_pitch"
+          maxTorque 2.8
+        }
+        PositionSensor {
+          name "r_hip_pitch_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.037 -0.0907 0
+        children [
+          DEF R_THIGH Shape {
+            appearance PBRAppearance {
+              baseColor 0.6 0.6 0.6
+            }
+            geometry Cylinder {
+              height 0.093
+              radius 0.02
+            }
+          }
+          DEF R_KNEE_JOINT HingeJoint {
+            jointParameters HingeJointParameters {
+              axis 0 0 -1
+              anchor 0 -0.093 0
+            }
+            device [
+              RotationalMotor {
+                name "r_knee"
+                maxTorque 2.8
+              }
+              PositionSensor {
+                name "r_knee_sensor"
+              }
+            ]
+            endPoint Solid {
+              translation 0 -0.093 0
+              children [
+                DEF R_SHIN Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.6 0.6 0.6
+                  }
+                  geometry Cylinder {
+                    height 0.093
+                    radius 0.018
+                  }
+                }
+                DEF R_ANKLE_JOINT HingeJoint {
+                  jointParameters HingeJointParameters {
+                    axis 0 0 1
+                    anchor 0 -0.093 0
+                  }
+                  device [
+                    RotationalMotor {
+                      name "r_ankle_pitch"
+                      maxTorque 2.8
+                    }
+                    PositionSensor {
+                      name "r_ankle_pitch_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    translation 0 -0.093 0
+                    children [
+                      DEF R_FOOT Shape {
+                        appearance PBRAppearance {
+                          baseColor 0.4 0.4 0.4
+                        }
+                        geometry Box {
+                          size 0.04 0.03 0.08
+                        }
+                      }
+                    ]
+                    name "r_foot"
+                    boundingObject USE R_FOOT
+                    physics Physics {
+                      density -1
+                      mass 0.08
+                    }
+                  }
+                }
+              ]
+              name "r_shin"
+              boundingObject USE R_SHIN
+              physics Physics {
+                density -1
+                mass 0.07
+              }
+            }
+          }
+        ]
+        name "r_thigh"
+        boundingObject USE R_THIGH
+        physics Physics {
+          density -1
+          mass 0.12
+        }
+      }
+    }
+  ]
+  name "simple_walking_robot"
+  boundingObject USE BODY
+  physics Physics {
+    density -1
+    mass 1.0
+  }
+  controller "<extern>"
+  supervisor TRUE
+}
+

@@ -1,0 +1,63 @@
+# simple_walking_robot 肢体配置
+# 简化结构：只有躯干和双腿
+
+/**:
+  ros__parameters:
+    simple_walking_robot_limb:
+      # 机器人物理参数
+      robot_params:
+        mass: 3.0  # kg
+        thigh_length: 0.093  # m (大腿长度)
+        shin_length: 0.093   # m (小腿长度)
+        hip_offset_y: 0.037  # m (髋关节横向偏移)
+        hip_offset_z: 0.0907 # m (髋关节垂直偏移)
+        standing_height: 0.172  # m (站立时重心高度)
+        
+      limb_names:
+        left_leg: l_leg
+        right_leg: r_leg
+        
+      limb_config:
+        l_leg:
+          joint_names:
+            - l_hip_pitch
+            - l_knee
+            - l_ankle_pitch
+          position_sensor_names:
+            - l_hip_pitch_sensor
+            - l_knee_sensor
+            - l_ankle_pitch_sensor
+          joint_numbers:
+            - 0
+            - 1
+            - 2
+          joint_unit_vector:
+            - [0, -1, 0]
+            - [0, -1, 0]
+            - [0, 1, 0]
+          link_length:
+            - [-0.005, 0.037, -0.0907]
+            - [0, 0, -0.093]
+            - [0, 0, -0.093]
+        r_leg:
+          joint_names:
+            - r_hip_pitch
+            - r_knee
+            - r_ankle_pitch
+          position_sensor_names:
+            - r_hip_pitch_sensor
+            - r_knee_sensor
+            - r_ankle_pitch_sensor
+          joint_numbers:
+            - 3
+            - 4
+            - 5
+          joint_unit_vector:
+            - [0, -1, 0]
+            - [0, -1, 0]
+            - [0, 1, 0]
+          link_length:
+            - [-0.005, -0.037, -0.0907]
+            - [0, 0, -0.093]
+            - [0, 0, -0.093]
+

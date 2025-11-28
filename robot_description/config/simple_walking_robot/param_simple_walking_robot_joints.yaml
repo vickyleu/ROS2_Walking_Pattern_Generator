@@ -1,0 +1,77 @@
+# simple_walking_robot 关节配置
+# 只有6个关节：每腿3个pitch关节
+
+/**:
+  ros__parameters:
+    simple_walking_robot_joints:
+      base_joint:
+        origin:
+          xyz: [0.0, 0.0, 0.0]
+          rpy: [0.0, 0.0, 0.0]
+      l_hip_pitch:
+        position_sensor_name: l_hip_pitch_sensor
+        origin:
+          xyz: [-0.005, 0.037, -0.0907]
+          rpy: [0, 0, 0]
+        axis: [0, -1, 0]
+        limit:
+          effort: 2.8
+          lower: -1.57
+          upper: 1.57
+          velocity: 5.65
+      l_knee:
+        position_sensor_name: l_knee_sensor
+        origin:
+          xyz: [0, 0, -0.093]
+          rpy: [0, 0, 0]
+        axis: [0, -1, 0]
+        limit:
+          effort: 2.8
+          lower: -1.57
+          upper: 0.0
+          velocity: 5.65
+      l_ankle_pitch:
+        position_sensor_name: l_ankle_pitch_sensor
+        origin:
+          xyz: [0, 0, -0.093]
+          rpy: [0, 0, 0]
+        axis: [0, 1, 0]
+        limit:
+          effort: 2.8
+          lower: -0.78
+          upper: 0.78
+          velocity: 5.65
+      r_hip_pitch:
+        position_sensor_name: r_hip_pitch_sensor
+        origin:
+          xyz: [-0.005, -0.037, -0.0907]
+          rpy: [0, 0, 0]
+        axis: [0, -1, 0]
+        limit:
+          effort: 2.8
+          lower: -1.57
+          upper: 1.57
+          velocity: 5.65
+      r_knee:
+        position_sensor_name: r_knee_sensor
+        origin:
+          xyz: [0, 0, -0.093]
+          rpy: [0, 0, 0]
+        axis: [0, -1, 0]
+        limit:
+          effort: 2.8
+          lower: -1.57
+          upper: 0.0
+          velocity: 5.65
+      r_ankle_pitch:
+        position_sensor_name: r_ankle_pitch_sensor
+        origin:
+          xyz: [0, 0, -0.093]
+          rpy: [0, 0, 0]
+        axis: [0, 1, 0]
+        limit:
+          effort: 2.8
+          lower: -0.78
+          upper: 0.78
+          velocity: 5.65
+

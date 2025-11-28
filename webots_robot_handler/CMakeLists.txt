@@ -35,6 +35,7 @@ pluginlib_export_plugin_description_file(webots_ros2_driver webots_robot_handler
 add_library(${PROJECT_NAME}
   SHARED
   src/WebotsRobotHander.cpp
+  src/SimpleWalkingRobotHandler.cpp
 )
 ament_target_dependencies(${PROJECT_NAME}
   pluginlib

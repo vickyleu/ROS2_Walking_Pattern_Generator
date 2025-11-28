@@ -11,22 +11,13 @@ import numpy as np
 from PIL import Image
 
 PROJECT_ROOT = "/home/vickyleu/ros2_ws/src/ROS2_Walking_Pattern_Generator"
-URDF_FILE = os.path.join(PROJECT_ROOT, "robot_description/models/robotis_op2/urdf/simple_working_robot.urdf")
+# 使用干净的几何体版本URDF
+URDF_FILE = os.path.join(PROJECT_ROOT, "robot_description/models/robotis_op2/urdf/simple_walking_robot_clean.urdf")
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "Records/screenshots")
 
 def run():
     import pybullet as p
     import pybullet_data
-    
-    # 修正 URDF 路径
-    with open(URDF_FILE, 'r') as f:
-        content = f.read()
-    content = content.replace('package://robot_description/', 
-                              os.path.join(PROJECT_ROOT, 'robot_description/'))
-    
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.urdf', delete=False) as tmp:
-        tmp.write(content)
-        tmp_urdf = tmp.name
     
     # 初始化
     p.connect(p.GUI)
@@ -34,7 +25,7 @@ def run():
     p.setGravity(0, 0, -9.81)
     p.loadURDF("plane.urdf")
     
-    robot = p.loadURDF(tmp_urdf, [0, 0, 0.3], useFixedBase=True)
+    robot = p.loadURDF(URDF_FILE, [0, 0, 0.25], useFixedBase=True)
     
     # 关节索引
     joints = {}
@@ -138,7 +129,6 @@ def run():
     print(f"PNG 保存: {png_path}")
     
     p.disconnect()
-    os.unlink(tmp_urdf)
 
 if __name__ == "__main__":
     print("=" * 50)

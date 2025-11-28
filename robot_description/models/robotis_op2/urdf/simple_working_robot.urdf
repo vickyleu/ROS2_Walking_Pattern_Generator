@@ -1,0 +1,373 @@
+<?xml version="1.0" ?>
+<robot name="simple_walking_robot">
+  <!-- ==================== Gazebo插件 ==================== -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+      <robotNamespace>/simple_walking_robot</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+  </gazebo>
+  
+  <gazebo>
+    <plugin filename="libgazebo_ros_p3d.so" name="ground_truth">
+      <frameName>map</frameName>
+      <bodyName>base_link</bodyName>
+      <topicName>odom</topicName>
+      <updateRate>100.0</updateRate>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="libhector_gazebo_ros_imu.so" name="gazebo_ros_imu">
+      <bodyName>body_link</bodyName>
+      <updateRate>50</updateRate>
+      <topicName>/simple_walking_robot/imu</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+  </gazebo>
+
+  <!-- ==================== Link物理属性 ==================== -->
+  <gazebo reference="base_link">
+    <selfCollide>false</selfCollide>
+  </gazebo>
+  
+  <gazebo reference="body_link">
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+
+  <!-- 左腿Link属性 -->
+  <gazebo reference="l_thigh_link">
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+  <gazebo reference="l_shin_link">
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+  <gazebo reference="l_foot_link">
+    <mu1>9000</mu1>
+    <mu2>9000</mu2>
+    <kp>1000000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxContacts>1</maxContacts>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+
+  <!-- 右腿Link属性 -->
+  <gazebo reference="r_thigh_link">
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+  <gazebo reference="r_shin_link">
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+  <gazebo reference="r_foot_link">
+    <mu1>9000</mu1>
+    <mu2>9000</mu2>
+    <kp>1000000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxContacts>1</maxContacts>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+
+  <!-- ==================== 基础躯干 ==================== -->
+  <link name="base_link"/>
+  
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="body_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="body_link">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_body.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.60 0.60 0.60 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_body.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.975"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ==================== 左腿：3个Pitch关节 ==================== -->
+  <!-- 胯关节：连接躯干与大腿 -->
+  <joint name="l_hip_pitch" type="revolute">
+    <parent link="body_link"/>
+    <child link="l_thigh_link"/>
+    <origin xyz="-0.005 0.037 -0.0907"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="2.8" lower="-1.57" upper="1.57" velocity="5.65"/>
+  </joint>
+  
+  <transmission name="l_hip_pitch_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="l_hip_pitch">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="l_hip_pitch_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="l_thigh_link">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_left_thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.60 0.60 0.60 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_left_thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.0465"/>
+      <mass value="0.119"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- 膝关节：连接大腿与小腿 -->
+  <joint name="l_knee" type="revolute">
+    <parent link="l_thigh_link"/>
+    <child link="l_shin_link"/>
+    <origin xyz="0 0 -0.093"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="2.8" lower="-1.57" upper="0.0" velocity="5.65"/>
+  </joint>
+  
+  <transmission name="l_knee_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="l_knee">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="l_knee_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="l_shin_link">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_left_shin.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.60 0.60 0.60 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_left_shin.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.0465"/>
+      <mass value="0.0703"/>
+      <inertia ixx="0.0005" ixy="0.0" ixz="0.0" iyy="0.0005" iyz="0.0" izz="0.0005"/>
+    </inertial>
+  </link>
+
+  <!-- 踝关节：连接小腿与脚 -->
+  <joint name="l_ankle_pitch" type="revolute">
+    <parent link="l_shin_link"/>
+    <child link="l_foot_link"/>
+    <origin xyz="0 0 -0.093"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2.8" lower="-0.78" upper="0.78" velocity="5.65"/>
+  </joint>
+  
+  <transmission name="l_ankle_pitch_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="l_ankle_pitch">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="l_ankle_pitch_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="l_foot_link">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_left_foot.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.60 0.60 0.60 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_left_foot.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.015"/>
+      <mass value="0.0794"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- ==================== 右腿：3个Pitch关节 ==================== -->
+  <!-- 胯关节 -->
+  <joint name="r_hip_pitch" type="revolute">
+    <parent link="body_link"/>
+    <child link="r_thigh_link"/>
+    <origin xyz="-0.005 -0.037 -0.0907"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="2.8" lower="-1.57" upper="1.57" velocity="5.65"/>
+  </joint>
+  
+  <transmission name="r_hip_pitch_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="r_hip_pitch">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="r_hip_pitch_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="r_thigh_link">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_right_thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.60 0.60 0.60 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_right_thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.0465"/>
+      <mass value="0.119"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- 膝关节 -->
+  <joint name="r_knee" type="revolute">
+    <parent link="r_thigh_link"/>
+    <child link="r_shin_link"/>
+    <origin xyz="0 0 -0.093"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="2.8" lower="-1.57" upper="0.0" velocity="5.65"/>
+  </joint>
+  
+  <transmission name="r_knee_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="r_knee">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="r_knee_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="r_shin_link">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_right_shin.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.60 0.60 0.60 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_right_shin.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.0465"/>
+      <mass value="0.0703"/>
+      <inertia ixx="0.0005" ixy="0.0" ixz="0.0" iyy="0.0005" iyz="0.0" izz="0.0005"/>
+    </inertial>
+  </link>
+
+  <!-- 踝关节 -->
+  <joint name="r_ankle_pitch" type="revolute">
+    <parent link="r_shin_link"/>
+    <child link="r_foot_link"/>
+    <origin xyz="0 0 -0.093"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2.8" lower="-0.78" upper="0.78" velocity="5.65"/>
+  </joint>
+  
+  <transmission name="r_ankle_pitch_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="r_ankle_pitch">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="r_ankle_pitch_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="r_foot_link">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_right_foot.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.60 0.60 0.60 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/models/robotis_op2/meshes/geo_op_right_foot.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.015"/>
+      <mass value="0.0794"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+</robot>

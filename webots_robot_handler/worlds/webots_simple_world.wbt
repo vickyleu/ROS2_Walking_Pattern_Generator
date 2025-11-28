@@ -1,17 +1,16 @@
-#VRML_SIM R2023b utf8
+#VRML_SIM R2025a utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/robotis/darwin-op/protos/RobotisOp2.proto"
-#EXTERNPROTO "../../robot_description/models/rdc_robot_v1/proto/simple_model.proto"
+EXTERNPROTO "/home/vickyleu/ros2_ws/src/ROS2_Walking_Pattern_Generator/robot_description/models/robotis_op2/proto/RobotisOp2Simple.proto"
 
 WorldInfo {
   basicTimeStep 10
 }
 Viewpoint {
-  orientation -0.13419524520586362 -0.033585038522204805 0.990385622548914 3.561959280293347
-  position 1.1874580812309212 0.5930131516182624 0.483741794041867
+  orientation 0.2721670900546468 -0.15003908964303161 0.9504805872137926 2.208604163292672
+  position 0.4376393485634263 -1.471538662527818 -1.0010019421199647
 }
 TexturedBackground {
   texture "stadium_dry"
@@ -21,7 +20,9 @@ TexturedBackgroundLight {
 }
 Floor {
 }
-DEF ROBOTIS_OP2 RobotisOp2 {
+DEF ROBOTIS_OP2 RobotisOp2Simple {
+  translation -0.235241 -0.358652 0
+  rotation 0.1294279597735375 0.1294279597735375 -0.9831056944488314 1.58783
   name "ROBOTIS_OP2"
   controller "<extern>"
   supervisor TRUE

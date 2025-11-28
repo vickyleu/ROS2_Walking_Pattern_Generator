@@ -1,0 +1,474 @@
+#VRML_SIM R2025a utf8
+# license: Apache License 2.0
+# license url: http://www.apache.org/licenses/LICENSE-2.0
+# This is a proto file for Webots for the simple_model
+# Extracted from: /home/note-ubu24/Projects/RDC_Bipedal/ros2_ws/src/ROS2_Walking_Pattern_Generator/robot_description/models/rdc_robot_v1/urdf/simple_model.urdf
+
+PROTO simple_model [
+  field  SFVec3f     translation     0 0 0
+  field  SFRotation  rotation        0 0 1 0
+  field  SFString    name            "simple_model"  # Is `Robot.name`.
+  field  SFString    controller      "void"          # Is `Robot.controller`.
+  field  MFString    controllerArgs  []              # Is `Robot.controllerArgs`.
+  field  SFString    customData      ""              # Is `Robot.customData`.
+  field  SFBool      supervisor      FALSE           # Is `Robot.supervisor`.
+  field  SFBool      synchronization TRUE            # Is `Robot.synchronization`.
+  field  SFBool      selfCollision   FALSE           # Is `Robot.selfCollision`.
+]
+{
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    controllerArgs IS controllerArgs
+    customData IS customData
+    supervisor IS supervisor
+    synchronization IS synchronization
+    selfCollision IS selfCollision
+    children [
+      Accelerometer {  # Add
+        translation 0.0 0.0 0.01  # TODO: Need Change
+        rotation 0.0 0.0 0.0 1.0  # dont need change (maybe, Quaternion)
+        # lookupTable[0 0 0 1024 1024 1024]
+        name "Accelerometer"
+      }
+      Gyro {  # Add
+        translation 0.0 0.0 0.01  # TODO: Need Change
+        rotation 0.0 0.0 0.0 1.0  # dont need change (maybe, Quaternion)
+        # lookupTable[0 0 0 1024 1024 1024]
+        name "Gyro"
+      }
+      Solid {
+        translation 0.000000 0.000000 0.333000
+        children [
+          Pose {
+            translation -0.091000 0.000000 0.000000
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.500000 0.500000 0.500000
+                  roughness 1.000000
+                  metalness 0
+                }
+                geometry DEF body Mesh {
+                  url "../meshes/body.stl"
+                }
+              }
+            ]
+          }
+          Solid {
+            translation -0.091000 0.000000 0.000000
+            children [
+              Pose {
+                translation 0.085000 0.000000 0.185000
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.500000 0.500000 0.500000
+                      roughness 1.000000
+                      metalness 0
+                    }
+                    geometry DEF body_luggage Mesh {
+                      url "../meshes/body_luggage.stl"
+                    }
+                  }
+                ]
+              }
+            ]
+            name "body_luggage"
+            boundingObject Pose {
+              translation 0.085000 0.000000 0.185000
+              children [
+                USE body_luggage
+              ]
+            }
+            physics Physics {
+              density -1
+              mass 6.002284
+              centerOfMass [ 0.000000 0.000000 0.000000 ]
+              inertiaMatrix [
+                2.121992e-02 5.941236e-02 5.612935e-02
+                0.000000e+00 0.000000e+00 0.000000e+00
+              ]
+            }
+          }
+          HingeJoint {
+            jointParameters HingeJointParameters {
+              anchor -0.091000 -0.075000 0.000000
+            }
+            device [
+              RotationalMotor {
+                name "r_waist_roll"
+                maxVelocity 11.519173063
+                minPosition -6.28
+                maxPosition 6.28
+                maxTorque 7.2
+              }
+              PositionSensor {
+                name "r_waist_roll_sensor"
+              }
+            ]
+            endPoint Solid {
+              translation -0.091000 -0.075000 0.000000
+              children [
+                Pose {
+                  translation 0.091000 0.000000 0.000000
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.500000 0.500000 0.500000
+                        roughness 1.000000
+                        metalness 0
+                      }
+                      geometry DEF link_wr2wp_r Mesh {
+                        url "../meshes/link_wr2wp_r.stl"
+                      }
+                    }
+                  ]
+                }
+                HingeJoint {
+                  jointParameters HingeJointParameters {
+                    axis 0.000000 1.000000 0.000000
+                    anchor 0.091000 -0.055000 0.000000
+                  }
+                  device [
+                    RotationalMotor {
+                      name "r_waist_pitch"
+                      maxVelocity 11.519173063
+                      minPosition -6.28
+                      maxPosition 6.28
+                      maxTorque 7.2
+                    }
+                    PositionSensor {
+                      name "r_waist_pitch_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    translation 0.091000 -0.055000 0.000000
+                    children [
+                      Pose {
+                        translation 0.000000 0.000000 -0.080000
+                        children [
+                          Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.500000 0.500000 0.500000
+                              roughness 1.000000
+                              metalness 0
+                            }
+                            geometry DEF link_wp2kp Mesh {
+                              url "../meshes/link_wp2kp.stl"
+                            }
+                          }
+                        ]
+                      }
+                      HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0.000000 1.000000 0.000000
+                          anchor 0.000000 0.000000 -0.160000
+                        }
+                        device [
+                          RotationalMotor {
+                            name "r_knee_pitch"
+                            maxVelocity 11.519173063
+                            minPosition -6.28
+                            maxPosition 6.28
+                            maxTorque 7.2
+                          }
+                          PositionSensor {
+                            name "r_knee_pitch_sensor"
+                          }
+                        ]
+                        endPoint Solid {
+                          translation 0.000000 0.000000 -0.160000
+                          children [
+                            Pose {
+                              translation 0.000000 0.000000 -0.074667
+                              children [
+                                Shape {
+                                  appearance PBRAppearance {
+                                    baseColor 0.500000 0.500000 0.500000
+                                    roughness 1.000000
+                                    metalness 0
+                                  }
+                                  geometry DEF link_kp2heel Mesh {
+                                    url "../meshes/link_kp2heel.stl"
+                                  }
+                                }
+                              ]
+                            }
+                            Solid {
+                              translation 0.000000 0.000000 -0.149335
+                              children [
+                                Shape {
+                                  appearance PBRAppearance {
+                                    baseColor 0.500000 0.500000 0.500000
+                                    roughness 1.000000
+                                    metalness 0
+                                  }
+                                  geometry DEF link_heel2end Mesh {
+                                    url "../meshes/link_heel2end.stl"
+                                  }
+                                }
+                              ]
+                              name "r_heel2end"
+                              boundingObject USE link_heel2end
+                              physics Physics {
+                                density -1
+                                mass 0.000001
+                              }
+                            }
+                          ]
+                          name "r_kp2heel"
+                          boundingObject Pose {
+                            translation 0.000000 0.000000 -0.074667
+                            children [
+                              USE link_kp2heel
+                            ]
+                          }
+                          physics Physics {
+                            density -1
+                            mass 0.199496
+                            centerOfMass [ 0.000000 0.000000 0.000000 ]
+                            inertiaMatrix [
+                              3.856908e-05 6.900478e-04 6.724748e-04
+                              0.000000e+00 0.000000e+00 0.000000e+00
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                    name "r_wp2kp"
+                    boundingObject Pose {
+                      translation 0.000000 0.000000 -0.080000
+                      children [
+                        USE link_wp2kp
+                      ]
+                    }
+                    physics Physics {
+                      density -1
+                      mass 0.581098
+                      centerOfMass [ 0.000000 0.000000 0.000000 ]
+                      inertiaMatrix [
+                        3.005655e-03 3.394100e-03 5.801752e-04
+                        0.000000e+00 0.000000e+00 0.000000e+00
+                      ]
+                    }
+                  }
+                }
+              ]
+              name "r_wr2wp"
+              boundingObject Pose {
+                translation 0.091000 0.000000 0.000000
+                children [
+                  USE link_wr2wp_r
+                ]
+              }
+              physics Physics {
+                density -1
+                mass 1.463019
+                centerOfMass [ 0.000000 0.000000 0.000000 ]
+                inertiaMatrix [
+                  1.749718e-03 3.223386e-03 3.263128e-03
+                  0.000000e+00 0.000000e+00 0.000000e+00
+                ]
+              }
+            }
+          }
+          HingeJoint {
+            jointParameters HingeJointParameters {
+              anchor -0.091000 0.075000 0.000000
+            }
+            device [
+              RotationalMotor {
+                name "l_waist_roll"
+                maxVelocity 11.519173063
+                minPosition -6.28
+                maxPosition 6.28
+                maxTorque 7.2
+              }
+              PositionSensor {
+                name "l_waist_roll_sensor"
+              }
+            ]
+            endPoint Solid {
+              translation -0.091000 0.075000 0.000000
+              children [
+                Pose {
+                  translation 0.091000 0.000000 0.000000
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.500000 0.500000 0.500000
+                        roughness 1.000000
+                        metalness 0
+                      }
+                      geometry DEF link_wr2wp_l Mesh {
+                        url "../meshes/link_wr2wp_l.stl"
+                      }
+                    }
+                  ]
+                }
+                HingeJoint {
+                  jointParameters HingeJointParameters {
+                    axis 0.000000 1.000000 0.000000
+                    anchor 0.091000 0.055000 0.000000
+                  }
+                  device [
+                    RotationalMotor {
+                      name "l_waist_pitch"
+                      maxVelocity 11.519173063
+                      minPosition -6.28
+                      maxPosition 6.28
+                      maxTorque 7.2
+                    }
+                    PositionSensor {
+                      name "l_waist_pitch_sensor"
+                    }
+                  ]
+                  endPoint Solid {
+                    translation 0.091000 0.055000 0.000000
+                    children [
+                      Pose {
+                        translation 0.000000 0.000000 -0.080000
+                        children [
+                          Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.500000 0.500000 0.500000
+                              roughness 1.000000
+                              metalness 0
+                            }
+                            geometry USE link_wp2kp
+                          }
+                        ]
+                      }
+                      HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0.000000 1.000000 0.000000
+                          anchor 0.000000 0.000000 -0.160000
+                        }
+                        device [
+                          RotationalMotor {
+                            name "l_knee_pitch"
+                            maxVelocity 11.519173063
+                            minPosition -6.28
+                            maxPosition 6.28
+                            maxTorque 7.2
+                          }
+                          PositionSensor {
+                            name "l_knee_pitch_sensor"
+                          }
+                        ]
+                        endPoint Solid {
+                          translation 0.000000 0.000000 -0.160000
+                          children [
+                            Pose {
+                              translation 0.000000 0.000000 -0.074667
+                              children [
+                                Shape {
+                                  appearance PBRAppearance {
+                                    baseColor 0.500000 0.500000 0.500000
+                                    roughness 1.000000
+                                    metalness 0
+                                  }
+                                  geometry USE link_kp2heel
+                                }
+                              ]
+                            }
+                            Solid {
+                              translation 0.000000 0.000000 -0.149335
+                              children [
+                                Shape {
+                                  appearance PBRAppearance {
+                                    baseColor 0.500000 0.500000 0.500000
+                                    roughness 1.000000
+                                    metalness 0
+                                  }
+                                  geometry USE link_heel2end
+                                }
+                              ]
+                              name "l_heel2end"
+                              boundingObject USE link_heel2end
+                              physics Physics {
+                                density -1
+                                mass 0.000001
+                              }
+                            }
+                          ]
+                          name "l_kp2heel"
+                          boundingObject Pose {
+                            translation 0.000000 0.000000 -0.074667
+                            children [
+                              USE link_kp2heel
+                            ]
+                          }
+                          physics Physics {
+                            density -1
+                            mass 0.199496
+                            centerOfMass [ 0.000000 0.000000 0.000000 ]
+                            inertiaMatrix [
+                              3.856908e-05 6.900478e-04 6.724748e-04
+                              0.000000e+00 0.000000e+00 0.000000e+00
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                    name "l_wp2kp"
+                    boundingObject Pose {
+                      translation 0.000000 0.000000 -0.080000
+                      children [
+                        USE link_wp2kp
+                      ]
+                    }
+                    physics Physics {
+                      density -1
+                      mass 0.581098
+                      centerOfMass [ 0.000000 0.000000 0.000000 ]
+                      inertiaMatrix [
+                        3.005655e-03 3.394100e-03 5.801752e-04
+                        0.000000e+00 0.000000e+00 0.000000e+00
+                      ]
+                    }
+                  }
+                }
+              ]
+              name "l_wr2wp"
+              boundingObject Pose {
+                translation 0.091000 0.000000 0.000000
+                children [
+                  USE link_wr2wp_l
+                ]
+              }
+              physics Physics {
+                density -1
+                mass 1.463019
+                centerOfMass [ 0.000000 0.000000 0.000000 ]
+                inertiaMatrix [
+                  1.749718e-03 3.223386e-03 3.263128e-03
+                  0.000000e+00 0.000000e+00 0.000000e+00
+                ]
+              }
+            }
+          }
+        ]
+        name "body"
+        boundingObject Pose {
+          translation -0.091000 0.000000 0.000000
+          children [
+            USE body
+          ]
+        }
+        physics Physics {
+          density -1
+          mass 1.128279
+          centerOfMass [ 0.000000 0.000000 0.000000 ]
+          inertiaMatrix [
+            7.256488e-03 1.475086e-02 1.066808e-02
+            0.000000e+00 0.000000e+00 0.000000e+00
+          ]
+        }
+      }
+    ]
+    name IS name
+  }
+}

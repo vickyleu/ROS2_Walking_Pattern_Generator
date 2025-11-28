@@ -249,7 +249,19 @@ def run_simulation():
     dt = 1/240
     total_time = 4.0
     
+    # 用于生成多帧截图
     frames = []
+    frame_times = []
+    capture_interval = 0.1  # 每0.1秒截一帧
+    last_capture = -capture_interval
+    
+    # 相机设置
+    view_matrix = p.computeViewMatrix(
+        cameraEyePosition=[0.4, 0.3, 0.25],
+        cameraTargetPosition=[0, 0, 0.12],
+        cameraUpVector=[0, 0, 1]
+    )
+    proj_matrix = p.computeProjectionMatrixFOV(fov=60, aspect=1.0, nearVal=0.01, farVal=10)
     
     while sim_time < total_time:
         # 计算关节角度
@@ -264,32 +276,53 @@ def run_simulation():
                                         targetPosition=angle, force=10.0, maxVelocity=3.0)
         
         p.stepSimulation()
+        
+        # 每隔一段时间截一帧
+        if sim_time - last_capture >= capture_interval:
+            _, _, rgb, _, _ = p.getCameraImage(400, 400, viewMatrix=view_matrix,
+                                                projectionMatrix=proj_matrix,
+                                                renderer=p.ER_TINY_RENDERER)
+            frames.append(rgb)
+            frame_times.append(sim_time)
+            last_capture = sim_time
+        
         sim_time += dt
         
         if gui_mode:
-            time.sleep(dt * 0.5)  # 稍微加速播放
+            time.sleep(dt * 0.3)
     
-    print("仿真完成!")
+    print(f"仿真完成! 共捕获 {len(frames)} 帧")
     
-    # 保存截图
-    view_matrix = p.computeViewMatrix(
-        cameraEyePosition=[0.5, 0.4, 0.3],
-        cameraTargetPosition=[0, 0, 0.15],
-        cameraUpVector=[0, 0, 1]
-    )
-    proj_matrix = p.computeProjectionMatrixFOV(fov=60, aspect=1.0, nearVal=0.01, farVal=10)
-    
-    width, height = 800, 800
-    _, _, rgb, _, _ = p.getCameraImage(width, height, viewMatrix=view_matrix,
-                                        projectionMatrix=proj_matrix,
-                                        renderer=p.ER_TINY_RENDERER)
-    
+    # 保存多帧截图
     from PIL import Image
-    img = Image.fromarray(np.array(rgb, dtype=np.uint8).reshape(height, width, 4)[:, :, :3])
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
+    # 转换所有帧为 PIL Image
+    images = []
+    for rgb in frames:
+        img = Image.fromarray(np.array(rgb, dtype=np.uint8).reshape(400, 400, 4)[:, :, :3])
+        images.append(img)
+    
+    # 生成 GIF 动画
+    gif_path = os.path.join(OUTPUT_DIR, "simple_walking_gait.gif")
+    if len(images) > 1:
+        images[0].save(gif_path, save_all=True, append_images=images[1:], 
+                       duration=100, loop=0)  # 100ms per frame
+        print(f"GIF 动画保存: {gif_path}")
+    
+    # 生成帧拼接图 (选取关键帧)
+    key_frame_indices = [0, len(images)//4, len(images)//2, 3*len(images)//4, len(images)-1]
+    key_frames = [images[i] for i in key_frame_indices if i < len(images)]
+    
+    # 横向拼接
+    total_width = 400 * len(key_frames)
+    combined = Image.new('RGB', (total_width, 400))
+    for i, img in enumerate(key_frames):
+        combined.paste(img, (i * 400, 0))
+    
     output_path = os.path.join(OUTPUT_DIR, "simple_walking_gait.png")
-    img.save(output_path)
-    print(f"截图保存: {output_path}")
+    combined.save(output_path)
+    print(f"帧拼接图保存: {output_path} ({len(key_frames)} 帧)")
     
     p.disconnect()
     os.unlink(tmp_urdf)

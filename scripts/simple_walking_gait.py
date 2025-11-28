@@ -22,10 +22,10 @@ class RobotParams:
     HIP_OFFSET_Z = 0.0907 # m (髋关节垂直偏移)
     
     # 步态参数
-    STANDING_HEIGHT = 0.16  # m (站立时髋关节到脚底的距离)
-    STEP_LENGTH = 0.02      # m (步长)
-    STEP_HEIGHT = 0.015     # m (抬脚高度)
-    STEP_PERIOD = 1.0       # s (单步周期)
+    STANDING_HEIGHT = 0.17  # m (站立时髋关节到脚底的距离，稍高一点)
+    STEP_LENGTH = 0.025     # m (步长)
+    STEP_HEIGHT = 0.02      # m (抬脚高度)
+    STEP_PERIOD = 0.8       # s (单步周期)
 
 # ============== 逆运动学 ==============
 class InverseKinematics3DOF:
@@ -41,32 +41,42 @@ class InverseKinematics3DOF:
         """
         输入: 脚相对于髋关节的位置 (x=前向, z=向下为负)
         输出: [hip_pitch, knee, ankle_pitch]
+        
+        坐标系: x向前, z向下为负
+        关节正方向: 绕Y轴，向前踢腿为正
         """
-        # 目标距离
-        r = math.sqrt(x*x + z*z)
+        # z应该是负值（脚在髋关节下方）
+        # 转换为正值计算
+        leg_length = -z  # 腿的垂直长度（正值）
+        forward = x       # 前向偏移
+        
+        # 计算髋关节到脚的距离
+        r = math.sqrt(forward**2 + leg_length**2)
         
         # 限制在可达范围内
-        max_reach = self.L1 + self.L2 - 0.005
-        min_reach = abs(self.L1 - self.L2) + 0.005
-        r = np.clip(r, min_reach, max_reach)
+        max_reach = self.L1 + self.L2 - 0.002
+        min_reach = abs(self.L1 - self.L2) + 0.002
+        if r > max_reach:
+            r = max_reach
+        if r < min_reach:
+            r = min_reach
         
         # 余弦定理求膝关节角度
-        # knee_angle = pi - (L1和L2之间的夹角)
-        cos_knee_inner = (self.L1**2 + self.L2**2 - r**2) / (2 * self.L1 * self.L2)
-        cos_knee_inner = np.clip(cos_knee_inner, -1, 1)
-        knee_inner = math.acos(cos_knee_inner)  # L1-L2夹角
-        knee = knee_inner - math.pi  # 膝关节弯曲角度（负值）
+        cos_knee = (self.L1**2 + self.L2**2 - r**2) / (2 * self.L1 * self.L2)
+        cos_knee = np.clip(cos_knee, -1, 1)
+        knee = -(math.pi - math.acos(cos_knee))  # 膝关节弯曲（负值表示向后弯）
         
-        # 求髋关节角度
-        # alpha: 目标点相对于髋关节的方向角
-        alpha = math.atan2(x, -z)  # x前向，-z向下
+        # 髋关节角度
+        # 使用几何关系
+        cos_alpha = (self.L1**2 + r**2 - self.L2**2) / (2 * self.L1 * r)
+        cos_alpha = np.clip(cos_alpha, -1, 1)
+        alpha = math.acos(cos_alpha)  # 大腿与髋-脚连线的夹角
         
-        # beta: 大腿相对于髋-脚连线的偏角
-        sin_beta = self.L2 * math.sin(knee_inner) / r
-        sin_beta = np.clip(sin_beta, -1, 1)
-        beta = math.asin(sin_beta)
+        # 髋-脚连线与垂直方向的夹角
+        gamma = math.atan2(forward, leg_length)
         
-        hip_pitch = alpha - beta
+        # 髋关节角度 = gamma - alpha（向前为正）
+        hip_pitch = gamma - alpha
         
         # 踝关节保持脚底水平
         ankle_pitch = -(hip_pitch + knee)
@@ -193,15 +203,18 @@ def run_simulation():
     gait = SimpleWalkingGait()
     
     # 关节名称和对应的符号（适配 URDF 中的轴定义）
-    # URDF 中：l_hip_pitch axis=(0,-1,0), l_knee axis=(0,-1,0), l_ankle_pitch axis=(0,1,0)
-    #          r_hip_pitch axis=(0,-1,0), r_knee axis=(0,-1,0), r_ankle_pitch axis=(0,1,0)
+    # URDF: l_hip_pitch axis=(0,-1,0), l_knee axis=(0,-1,0), l_ankle_pitch axis=(0,1,0)
+    #       r_hip_pitch axis=(0,-1,0), r_knee axis=(0,-1,0), r_ankle_pitch axis=(0,1,0)
+    # 我们的IK: 正值=向前踢腿
+    # URDF: axis=(0,-1,0) 意味着正角度绕-Y轴旋转，即向后踢腿
+    # 所以需要取反
     joint_config = [
-        ('l_hip_pitch', -1),   # 需要取反
-        ('l_knee', -1),        # 需要取反
-        ('l_ankle_pitch', 1),  # 不取反
-        ('r_hip_pitch', -1),   # 需要取反
-        ('r_knee', -1),        # 需要取反
-        ('r_ankle_pitch', 1),  # 不取反
+        ('l_hip_pitch', 1),    # axis=(0,-1,0)，我们的正=URDF的负
+        ('l_knee', 1),         # axis=(0,-1,0)
+        ('l_ankle_pitch', -1), # axis=(0,1,0)，方向相反
+        ('r_hip_pitch', 1),    # axis=(0,-1,0)
+        ('r_knee', 1),         # axis=(0,-1,0)
+        ('r_ankle_pitch', -1), # axis=(0,1,0)
     ]
     
     # 设置初始站立姿态

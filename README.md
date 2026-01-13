@@ -72,6 +72,19 @@ https://github.com/open-rdc/ROS2_Walking_Pattern_Generator/assets/91410662/f884f
 <br>
 <br>
 
+## Motion table export (Wukong firmware)
+Export `motion_table.json` from `joint_states_record` logs.
+
+Example:
+```bash
+python3 tools/export_motion_table.py \\
+  --input Records/20260113__joint_states.dat \\
+  --output Records/motion_table.json \\
+  --action stand \\
+  --dt-ms 10 \\
+  --joint-source legL
+```
+
 ## Software Architecture
 ![software structure](https://github.com/open-rdc/ROS2_Walking_Pattern_Generator/assets/91410662/f3dd77da-4cc7-4a26-92b7-a974c0c666ee)
 

@@ -85,6 +85,19 @@ python3 tools/export_motion_table.py \\
   --joint-source legL
 ```
 
+Multiple actions (merge into one table):
+```bash
+python3 tools/export_motion_table.py \\
+  --input Records/stand_joint_states.dat \\
+  --action stand \\
+  --input Records/step_joint_states.dat \\
+  --action step_in_place \\
+  --output Records/motion_table.json \\
+  --dt-ms 10 \\
+  --joint-source legL \\
+  --expected-joints 6
+```
+
 ## Software Architecture
 ![software structure](https://github.com/open-rdc/ROS2_Walking_Pattern_Generator/assets/91410662/f3dd77da-4cc7-4a26-92b7-a974c0c666ee)
 

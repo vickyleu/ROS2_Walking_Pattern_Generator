@@ -17,5 +17,6 @@ namespace foot_step_planner
 
       double WALKING_CYCLE_ = 0;
       double WAIST_HEIGHT_ = 0;
+      std::string motion_mode_;
   };
 }

@@ -1,6 +1,7 @@
 /**:
   ros__parameters:
-    mode_switch: 
+    mode_switch:
       on_or_offline_pattern_generate: false
       debug_mode: true
       using_simulator: false
+      motion_mode: step_in_place

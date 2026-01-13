@@ -13,6 +13,7 @@ class ParameterServer : public rclcpp::Node {
       on_or_offline_pattern_generate_ = get_parameter("mode_switch.on_or_offline_pattern_generate").as_bool();
       debug_mode_ = get_parameter("mode_switch.debug_mode").as_bool();
       using_simulator_ = get_parameter("mode_switch.using_simulator").as_bool();
+      motion_mode_ = get_parameter("mode_switch.motion_mode").as_string();
 
       //robot_description
       robot_name_ = get_parameter("robot_description.robot_name").as_string();
@@ -53,6 +54,7 @@ class ParameterServer : public rclcpp::Node {
     bool on_or_offline_pattern_generate_;
     bool debug_mode_;
     bool using_simulator_;
+    std::string motion_mode_;
 
     // robot_description
     std::string robot_name_;
